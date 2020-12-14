@@ -1,0 +1,88 @@
+version: '3.7'
+
+services:
+    nginx:
+        container_name: ${PROJECT_NAME}_nginx
+        image: nginx:latest
+        links:
+            - php
+        ports:
+            - 80:80
+        volumes:
+            - ../:/var/www/project
+            - ./images/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+        networks:
+            - skeleton-network
+        logging:
+            driver: syslog
+            options:
+                tag: "nginx"
+                syslog-facility: "daemon"
+
+    php:
+        container_name: ${PROJECT_NAME}_php
+        image: php:7.4-fpm
+        build:
+            context: .
+            dockerfile: images/php/Dockerfile
+        working_dir: /var/www/project
+        volumes:
+            - ../:/var/www/project
+            - ./images/php/local.ini:/usr/local/etc/php/conf.d/php.ini:ro
+        networks:
+            - skeleton-network
+        logging:
+            driver: syslog
+            options:
+                tag: "php"
+                syslog-facility: "daemon"
+
+#    mongo_db:
+#        image: mongo:latest
+#        container_name: ${PROJECT_NAME}_mongodb
+#        restart: always
+#        user: ${UID}:${GID}
+#        links:
+#            - php
+#        volumes:
+#            - ./images/mongodb/mongod.conf:/etc/mongod.conf
+#            - ./images/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+#            - ./images/mongodb/data/db/:/data/db/
+#            - ./images/mongodb/data/log/:/var/log/mongodb/
+#        env_file:
+#            - ../.env
+#        ports:
+#            - "27017:27017"
+#        networks:
+#            - skeleton-network
+#        logging:
+#            driver: syslog
+#            options:
+#                tag: "mongodb"
+#                syslog-facility: "daemon"
+
+    mysql_db:
+        container_name: ${PROJECT_NAME}_mysql
+        image: mysql:8
+        ports:
+            - 3306:3306
+        user: ${UID}:${GID}
+        links:
+            - php
+        volumes:
+            - ./images/mysql/:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+        logging:
+            driver: syslog
+            options:
+                tag: "mysql"
+                syslog-facility: "daemon"
+        networks:
+            - skeleton-network
+
+networks:
+    skeleton-network:
+        driver: bridge

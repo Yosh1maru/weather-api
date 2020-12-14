@@ -1,0 +1,28 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+                mapping_types:
+                    enum: string
+                driver: pdo_mysql
+                server_version: 8
+                host: '%env(resolve:MYSQL_HOST)%'
+                port: '%env(resolve:MYSQL_PORT)%'
+                dbname: '%env(resolve:MYSQL_DATABASE)%'
+                user: '%env(resolve:MYSQL_USER)%'
+                password: '%env(resolve:MYSQL_ROOT_PASSWORD)%'
+                charset: utf8mb4
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Domain/Entity'
+                prefix: 'App\Domain\Entity\'
+                alias: App

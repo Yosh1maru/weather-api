@@ -1,0 +1,13 @@
+index:
+    path: /city/{cityName}
+    controller:  App\Api\Controller\ApiCityController::indexAction
+    requirements:
+        cityName: '\d+'
+    methods:
+        - GET
+
+add_city:
+    path: /city
+    controller:  App\Api\Controller\ApiCityController::addCityAction
+    methods:
+        - PUT

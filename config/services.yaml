@@ -1,0 +1,24 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    App\Api\:
+        resource: '../src/Api/*'
+        exclude: '../src/Api/{*Bundle.php,*Dto.php,*Dbal.php,*Exception.php}'
+
+    App\Api\Controller\:
+        resource: '../src/Api/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Domain\:
+        resource: '../src/Domain/'
+
+    App\Domain\Entity\:
+        resource: '../src/Domain/Entity'

@@ -1,0 +1,3 @@
+blog_list:
+    prefix: /api
+    resource: ../src/Api/Resources/Config/routes.yaml
